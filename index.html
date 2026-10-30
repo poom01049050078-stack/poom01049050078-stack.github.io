@@ -648,7 +648,19 @@ function strToItem(raw){
   if(raw==="명상"||raw==="인성교육") return {g:raw, n:raw};
   const [k,v]=raw.split(":"); return {g:k, n:v||k};
 }
-function defaultItems(d){ const e=PLAN.days[d]; const arr=Array.isArray(e)?e:(e&&e.items)||[]; return arr.map(strToItem); }
+/* 수업 순서: 수련계획표에 적힌 순서가 아니라 정적인 운동 먼저 → 동적인 운동으로 마무리
+   숫자가 작을수록 정적 (0 명상·인성 → 1 스트레칭·발표 → 2 균형 → 3 품새·기본동작 → 4 발차기·격파 → 5 줄넘기·체조·매트 → 6 달리기·체력)
+   같은 숫자끼리는 계획표 순서 그대로 */
+const MOVE_RANK_N = {"좌전굴":1,"중심잡기 운동":2,"균형감각 훈련":2,"악력":2,"에어매트 매달리기":3,"징검다리 훈련":5};
+const MOVE_RANK_G = {"명상":0,"인성교육":0,"준비운동":1,"발표력":1,"심사":3,"커리큘럼":3,"품새":3,"기술발차기":4,"제미타프로그램":4,"격파":4,
+                     "음악프로그램":5,"줄넘기":5,"매트운동":5,"체력":6,"유아체육":6,"레크레이션":6,"PAPS":6};
+function moveRank(it){
+  if(it.n in MOVE_RANK_N) return MOVE_RANK_N[it.n];
+  if(it.g==="커리큘럼" && /발차기|격파/.test(it.n)) return 4;
+  return it.g in MOVE_RANK_G ? MOVE_RANK_G[it.g] : 4;
+}
+function defaultItems(d){ const e=PLAN.days[d]; const arr=Array.isArray(e)?e:(e&&e.items)||[];
+  return arr.map(strToItem).map((it,i)=>[it,i]).sort((a,b)=>moveRank(a[0])-moveRank(b[0])||a[1]-b[1]).map(x=>x[0]); }
 
 /* ===== 저장소: 수정한 내용 (days/d14 문서 하나에 하루치) ===== */
 const LS_KEY = "poom-days-"+PLAN.year+"-"+PLAN.month+(GROUP==="yu"?"-yu":"");
