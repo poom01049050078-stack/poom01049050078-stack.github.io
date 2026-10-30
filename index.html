@@ -191,6 +191,17 @@ body{margin:0;background:#3a332c;color:var(--ink);font-family:var(--f-body);over
 #vp .vt{font:400 56px/1 var(--f-display)}
 #vp .vpart{font:700 28px/1 var(--f-body);color:#cbbfb1;margin-left:20px}
 #vp .vclose{font:700 30px/1 var(--f-body);background:#fff;color:var(--ink);border:0;border-radius:999px;padding:18px 30px;cursor:pointer}
+/* 영상은 무조건 화면 전체로 (v5): 제목줄은 3초 뒤 사라짐 */
+#vp.full{position:fixed;inset:0;z-index:1000;background:#000;display:block}
+#vp.full .vhead{position:absolute;left:0;right:0;top:0;width:auto;z-index:2;box-sizing:border-box;padding:clamp(12px,2vw,28px) clamp(16px,2.4vw,36px);background:linear-gradient(rgba(0,0,0,.75),transparent);transition:opacity .8s}
+#vp.full.calm .vhead{opacity:0}
+#vp.full .vt{font-size:clamp(20px,2.4vw,44px)}
+#vp.full .vpart{font-size:clamp(14px,1.4vw,26px)}
+#vp.full .vclose{font-size:clamp(14px,1.3vw,24px);padding:.6em 1em}
+#vp.full video,#vp.full .ytbox,#vp.full .ytbox iframe,#vp.full>iframe{position:absolute;inset:0;width:100%;height:100%;border-radius:0!important}
+#vp.full video{object-fit:contain}
+#vp.full .ytfail{border-radius:0;font-size:clamp(20px,2.6vw,44px)}
+#vp.full .ytfail .btn{font-size:clamp(18px,2.2vw,40px)}
 
 /* 전달사항 */
 .s-notice{background:var(--paper)}
@@ -399,7 +410,7 @@ body[class*="th-"] #pos,body[class*="th-"] #track,body[class*="th-"] #savest{col
 <div id="start">
   <div class="card">
     <h1 id="startTitle">오늘의 수업을<br>시작할까요?</h1>
-    <p>오늘 날짜의 수업 PPT가 열리고, 장마다 맞는 음악이 나옵니다.<br>→ 키(또는 프레젠터 리모컨)로 넘기면 영상이 있는 장에서는 영상이 먼저 나옵니다.<br>리모컨의 탭(Tab) 키로 영상을 고르고 → 키(또는 Enter)를 누르면 그 영상이 나옵니다.<br>숫자 1·2·3은 그 장의 영상, F는 전체화면, M은 음악입니다.</p>
+    <p>오늘 날짜의 수업 PPT가 열리고, 장마다 맞는 음악이 나옵니다.<br>→ 키(또는 프레젠터 리모컨)로 넘기면 영상이 있는 장에서는 영상이 먼저 나옵니다.<br>리모컨의 탭(Tab) 키로 영상을 고르고 → 키(또는 Enter)를 누르면 그 영상이 화면 전체로 나옵니다.<br>숫자 1·2·3은 그 장의 영상, F는 전체화면, M은 음악입니다.</p>
     <div class="row">
       <button class="btn" id="go">♪ 음악과 함께 시작</button>
       <button class="btn ghost" id="quiet">음악 없이 보기</button>
@@ -1046,14 +1057,17 @@ function openVideo(key){
   closeVideo(); stopCue(false); bgm.pause(); vpOpen=true;
   const gd=EMBED&&v&&v.gd;   // 홈페이지: 구글 드라이브 영상 · 아티팩트: 같이 올린 영상 파일
   if(!EMBED && v.local) yt=null;   // 아티팩트: 같이 올린 파일이 있으면 파일로
-  const slide=stage.querySelectorAll(".slide")[cur];
-  const box=document.createElement("div"); box.id="vp";
+  const box=document.createElement("div"); box.id="vp"; box.className="full";
   box.innerHTML=`<div class="vhead"><div><span class="vt">${esc(v.label)}</span><span class="vpart"></span></div><button class="vclose" data-vclose>✕ 닫기</button></div>`+
     (gd ? `<iframe width="1520" height="855" style="border:0;border-radius:18px;background:#000" src="https://drive.google.com/file/d/${gd}/preview" title="${esc(v.label)}" allow="autoplay; fullscreen" allowfullscreen></iframe>`
      : yt ? `<div class="ytbox"><iframe width="1520" height="855" style="border:0;border-radius:18px;background:#000" src="https://www.youtube-nocookie.com/embed/${yt}?autoplay=1&rel=0&playsinline=1&enablejsapi=1${v.start?`&start=${v.start}`:""}${v.end?`&end=${v.end}`:""}" title="${esc(v.label)}" referrerpolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
           <div class="ytfail" hidden><b>이 화면에서는 유튜브 영상이 열리지 않았어요</b><a class="btn" href="https://youtu.be/${yt}" target="_blank" rel="noopener" data-ytlink>유튜브 새 창으로 보기</a></div></div>`
         : `<video controls playsinline></video>`);
-  slide.appendChild(box);
+  document.body.appendChild(box); goFull(); setTimeout(()=>box.classList.add("calm"),3000);
+  box.addEventListener("click",ev=>{
+    if(ev.target.closest("[data-vclose]")){ closeVideo(); return; }
+    if(ev.target.closest("[data-ytlink]")){ stopCue(false); bgm.pause(); trackEl.textContent="▶ 유튜브 새 창에서 재생 중 · 돌아오면 ♪ 음악을 눌러 주세요"; }
+  });
   trackEl.textContent="▶ 영상 · "+v.label;
   if(yt){ ytAlive=false; clearTimeout(ytTimer); ytTimer=setTimeout(()=>{ if(!ytAlive) ytFail(); },7000); }
   if(yt||gd) return;
@@ -1064,6 +1078,8 @@ function openVideo(key){
   el.addEventListener("ended",()=>{ if(p<parts-1){ p++; load(); } else closeVideo(); });
   load();
 }
+/* 영상은 무조건 전체화면: 리모컨·클릭으로 영상을 열 때 브라우저 전체화면을 켬 */
+function goFull(){ try{ const d=document.documentElement; if(!document.fullscreenElement && d.requestFullscreen) d.requestFullscreen().catch(()=>{}); }catch(e){} }
 /* 유튜브가 끝나면 자동으로 닫기 + 리모컨 키가 계속 먹히도록 포커스 되찾기 */
 let ytAlive=false, ytTimer=null;
 function ytFail(){ const b=document.querySelector("#vp .ytfail"); if(b) b.hidden=false; }
