@@ -179,6 +179,9 @@ body{margin:0;background:#3a332c;color:var(--ink);font-family:var(--f-body);over
 /* 리모컨 탭 키로 고른 영상 */
 .vbtn.sel,.vwrap.sel{outline:8px solid var(--gold);outline-offset:6px;box-shadow:0 0 0 18px rgba(240,180,40,.28)}
 .vbtn.sel{transform:scale(1.12);background:var(--red)}
+.btn.sel,#bar button.sel{position:relative;outline:6px solid var(--gold)!important;outline-offset:4px;box-shadow:0 0 0 14px rgba(240,180,40,.28)}
+.btn.sel::after,#bar button.sel::after{content:"▶ 다음 키로 누르기";position:absolute;left:50%;bottom:calc(100% + 22px);transform:translateX(-50%);white-space:nowrap;font:700 22px/1 var(--f-body);background:var(--gold);color:var(--ink);border-radius:999px;padding:10px 18px;pointer-events:none}
+#bar button.sel::after{font-size:18px;bottom:calc(100% + 14px)}
 .vbtn.sel::after{content:"▶ 다음 키로 재생";position:absolute;left:50%;bottom:calc(100% + 22px);transform:translateX(-50%);white-space:nowrap;font:700 22px/1 var(--f-body);background:var(--gold);color:var(--ink);border-radius:999px;padding:10px 18px;pointer-events:none}
 .vbtn{position:relative;transition:transform .15s}
 .acts2 .btn{font-size:26px;padding:16px 24px}
@@ -410,7 +413,7 @@ body[class*="th-"] #pos,body[class*="th-"] #track,body[class*="th-"] #savest{col
 <div id="start">
   <div class="card">
     <h1 id="startTitle">오늘의 수업을<br>시작할까요?</h1>
-    <p>오늘 날짜의 수업 PPT가 열리고, 장마다 맞는 음악이 나옵니다.<br>→ 키(또는 프레젠터 리모컨)로 넘기면 영상이 있는 장에서는 영상이 먼저 나옵니다.<br>리모컨의 탭(Tab) 키로 영상을 고르고 → 키(또는 Enter)를 누르면 그 영상이 화면 전체로 나옵니다.<br>숫자 1·2·3은 그 장의 영상, F는 전체화면, M은 음악입니다.</p>
+    <p>오늘 날짜의 수업 PPT가 열리고, 장마다 맞는 음악이 나옵니다.<br>→ 키(또는 프레젠터 리모컨)로 넘기면 영상이 있는 장에서는 영상이 먼저 나옵니다.<br>리모컨의 탭(Tab) 키로 영상 · 수련 시작 음성 · 음악 · 다음 곡 버튼을 고르고 → 키(또는 Enter)로 누릅니다. 영상은 화면 전체로 나옵니다.<br>숫자 1·2·3은 그 장의 영상, F는 전체화면, M은 음악입니다.</p>
     <div class="row">
       <button class="btn" id="go">♪ 음악과 함께 시작</button>
       <button class="btn ghost" id="quiet">음악 없이 보기</button>
@@ -921,32 +924,41 @@ function show(i, quiet){
   els.forEach((el,j)=>el.setAttribute("aria-hidden",j===cur?"false":"true"));
   document.getElementById("pos").textContent=`${cur+1}/${deck.length} · ${deck[cur].label}`;
   if(!quiet){ closeVideo(); stopCue(false); }
-  selV=-1; lastSel=-1;
+  clearSel(); lastSel=-1;
   syncMusic();
 }
 /* 한 버튼 진행: 영상이 열려 있으면 닫고, 종목 장에서는 첫 영상을 먼저 틀고, 그다음 누르면 다음 장 */
 const played=new Set();
 function slideVideos(){ const el=stage.querySelectorAll(".slide")[cur]; return el&&(el.classList.contains("s-act")||el.classList.contains("autovid")) ? [...el.querySelectorAll("[data-video]")] : []; }
 function playNth(n){ const b=slideVideos()[n]; if(!b) return false; played.add(n); openVideo(b.dataset.video); return true; }
-/* 리모컨 탭 키: 이 장의 영상 버튼을 차례로 고르고, 다음 키(→ · PageDown · Enter)로 고른 영상 재생 */
+/* 리모컨 탭 키: 이 장의 영상·음성 버튼과 아래 막대의 음악·다음 곡을 차례로 고르고, 다음 키(→ · PageDown · Enter)로 누름 */
 let selV=-1, lastSel=-1;
-function tabVideos(){ const el=stage.querySelectorAll(".slide")[cur]; return el ? [...el.querySelectorAll("[data-video]")] : []; }
+function tabTargets(){
+  const el=stage.querySelectorAll(".slide")[cur];
+  const onSlide = el ? [...el.querySelectorAll("[data-video],[data-cue],[data-sw],[data-img]")] : [];
+  const onBar = ["play","skip"].map(id=>document.getElementById(id)).filter(b=>b && b.offsetParent!==null);
+  return [...onSlide, ...onBar];
+}
+function clearSel(){ selV=-1; document.querySelectorAll(".sel").forEach(b=>b.classList.remove("sel")); }
 function markSel(){
-  const vs=tabVideos(); stage.querySelectorAll("[data-video].sel").forEach(b=>b.classList.remove("sel"));
+  const vs=tabTargets(), i=selV; clearSel(); selV=i;
   const b=vs[selV]; if(!b) return;
   b.classList.add("sel");
-  trackEl.textContent=`▶ 고른 영상 · ${b.textContent.trim()||"영상"} (${selV+1}/${vs.length}) · 다음 키로 재생`;
+  trackEl.textContent=`▶ 고른 버튼 · ${b.textContent.trim()||"영상"} (${selV+1}/${vs.length}) · 다음 키로 누르기`;
 }
 function tabSelect(dir){
   if(vpOpen) closeVideo();
-  const vs=tabVideos(); if(!vs.length) return;
-  const from = selV>=0 ? selV : lastSel;   // 영상을 보고 나서 탭을 누르면 그다음 영상부터
+  const vs=tabTargets(); if(!vs.length) return;
+  const from = selV>=0 ? selV : lastSel;   // 영상을 보고 나서 탭을 누르면 그다음 버튼부터
   selV = from<0 ? (dir>0?0:vs.length-1) : (from+dir+vs.length)%vs.length;
   markSel();
 }
-/* 고른 영상을 틀고 선택은 지움 → 영상을 닫은 뒤 다음 키는 평소처럼 다음 장 */
-function playSel(){ const b=tabVideos()[selV]; if(!b) return false; const k=b.dataset.video; const n=slideVideos().indexOf(b); if(n>=0) played.add(n);
-  lastSel=selV; selV=-1; b.classList.remove("sel"); openVideo(k); return true; }
+/* 고른 버튼을 누르고 선택은 지움 → 그다음 다음 키는 평소처럼 (영상 닫기 → 다음 장) */
+function playSel(){ const b=tabTargets()[selV]; if(!b) return false;
+  const i=selV; clearSel(); lastSel=i;
+  if(b.dataset.video){ const n=slideVideos().indexOf(b); if(n>=0) played.add(n); openVideo(b.dataset.video); }
+  else b.click();   // 수련 시작 음성 · 음악 · 다음 곡 등은 화면에서 누른 것과 똑같이
+  return true; }
 function stepNext(){
   if(vpOpen){ closeVideo(); return; }
   if(!editing && selV>=0 && playSel()) return;            // 탭으로 고른 영상
