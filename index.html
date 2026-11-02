@@ -526,8 +526,8 @@ const VIDEOS = {
   poom4_parts:{label:"태극 4장 · 나눠서 배우기", short:"4장 나눠 배우기", parts:2},
   poom6_parts:{label:"태극 6장 · 나눠서 배우기", short:"6장 나눠 배우기", parts:2},
   warmup:{label:"몸풀기 체조", short:"몸풀기 체조", parts:1},
-  belt:{label:"띠매기", short:"띠매기", yt:"tkAqcCBuwRA"},
-  dobok:{label:"도복정리", short:"도복정리", yt:"Hr7aZvMP15A"},
+  belt:{label:"띠매기", short:"띠매기", yt:"PWAU2AncUQE"},   /* v11: 새 영상 */
+  dobok:{label:"도복정리", short:"도복정리", yt:"Q5-DMzlCHqw"},   /* v11: 새 영상 */
   stretchboard:{label:"스트레칭보드 운동 (바른체형)", short:"스트레칭보드", yt:"j9GylvymvK0"},
   foamroller:{label:"폼롤러 스트레칭 운동", short:"폼롤러", yt:"slKZhfF3sVM"},
   warm_shark:{label:"아기상어 몸풀기운동", short:"아기상어", yt:"cjFus96_p0E"},
@@ -540,7 +540,8 @@ const VIDEOS = {
   tkd_aerobic:{label:"태권체조", short:"태권체조", yt:"OiG5gOUIUVA"},
   breaking:{label:"격파 연습 · 재미타·손날·메주먹·위력격파", short:"격파 연습", yt:"WiRMIQ4j9Ho"},
   jensen:{label:"젠슨 황 대표님 이야기", short:"젠슨 황 영상", parts:2},   /* v10: 홈페이지도 같이 올린 영상 파일로 → 누르면 바로 재생 */
-  rhythm:{label:"리듬 트레이닝", short:"리듬 트레이닝", parts:1}   /* v10: 공유폴더 영상 · 초등부 준비운동 맨 앞 */
+  rhythm:{label:"리듬 트레이닝", short:"리듬 트레이닝", parts:1},   /* v10: 공유폴더 영상 (v11부터 안 씀) */
+  rhythm2:{label:"리듬 트레이닝", short:"리듬 트레이닝", parts:1}   /* v11: 새 리듬트레이닝 영상(유튜브 쇼츠 원본 파일) · 초등부 준비운동 맨 앞 */
 };
 /* 우리 홈페이지(github.io)인지: 홈페이지는 유튜브·구글 드라이브로, 아티팩트는 같이 올린 영상 파일 → 없으면 유튜브를 화면 안에서 재생 */
 const EMBED = /github\.io$/.test(location.hostname) || /[?&]embed=1/.test(location.search);
@@ -550,7 +551,7 @@ const DEFAULT_VIDEOS = {
   "기본발차기":["kick_front","kick_round","kick_side","kick_back","kick_hook"],
   "앞차기":["kick_front"],
   "이달의 품새":["poom4","poom6","poom4_parts","poom6_parts"],
-  "준비운동": GROUP==="yu" ? ["warmup","warm_basic","warm_gym","warm_shark"] : ["rhythm","warmup","warm_basic","warm_gym","warm_shark"],
+  "준비운동": GROUP==="yu" ? ["warmup","warm_basic","warm_gym","warm_shark"] : ["rhythm2","warmup","warm_basic","warm_gym","warm_shark"],
   "시청각준비운동":["av_run","av_thief","av_dino","av_monkey","warm_shark","warm_gym","warm_basic"],
   "바른체형교정":["stretchboard"],
   "폼롤러스트레칭":["foamroller"],
@@ -558,7 +559,7 @@ const DEFAULT_VIDEOS = {
   "격파":["breaking"], "손날격파":["breaking"], "위력격파":["breaking"], "메주먹격파":["breaking"],
   "마무리 인사":["belt","dobok"],
   "태극 1장":["poom1"], "음악품새":["poom4","poom6","poom4_parts","poom6_parts"],
-  "성장스트레칭": GROUP==="yu" ? ["warm_basic"] : ["rhythm","warm_basic"], "바른체형운동": GROUP==="yu" ? ["stretchboard"] : ["rhythm","stretchboard"], "뛰어앞차기 격파":["kick_front","breaking"],
+  "성장스트레칭": GROUP==="yu" ? ["warm_basic"] : ["rhythm2","warm_basic"], "바른체형운동": GROUP==="yu" ? ["stretchboard"] : ["rhythm2","stretchboard"], "뛰어앞차기 격파":["kick_front","breaking"],
   "기본발차기 미트발차기":["kick_front","kick_round"],
   "정기승급심사 총 연습": GROUP==="yu" ? ["poom1","kick_front"] : ["poom4","poom6"],
   "정기승급심사": GROUP==="yu" ? ["poom1"] : ["poom4","poom6"],
