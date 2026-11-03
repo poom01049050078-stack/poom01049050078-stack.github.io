@@ -439,34 +439,36 @@ document.body.classList.add("th-a");
 const RAWH=(location.hash||"").slice(1);
 const GROUP=/^yu(-|$)/.test(RAWH)?"yu":"cho";
 const HP=GROUP==="yu"?"yu-":"";
+/* 11월 개편 (v14): 초등부 월·화·수 품새 날은 준비운동 → 기본동작 → 품새 → 겨루기 → 격파 */
+const KAEPYEON = ["준비운동:리듬트레이닝", "기본동작:기본손동작", "품새:음악품새", "겨루기:비트 겨루기", "격파:발차기 격파"];
 const PLAN_CHO = {
   year: 2026, month: 11, group: "초등부",
   virtue: { word: "성실", def: "자신을 드러내지 않고 불평하지 않고 묵묵히 해내는 것",
     missions: ["해야 할 일을 묵묵히 끝까지 해요", "힘들어도 불평하지 않고 해 봐요", "똑같은 발차기도 힘 있게 정성껏!",
                "쉬고 싶은 마음을 스스로 이겨 내요", "수련에 빠지지 않고 꼭 나와요"] },
-  poomsae: { lo: "품새 4장", hi: "품새 6장" },
+  poomsae: { lo: "음악품새 4장", hi: "고려 · 금강" },   /* v14 개편 */
   days: {
-    2:  ["체력:장애물달리기", "품새:음악품새"],
-    3:  ["체력:순발력달리기", "품새:음악품새"],
-    4:  ["체력:리듬트레이닝", "품새:음악품새"],
+    2:  KAEPYEON,
+    3:  KAEPYEON,
+    4:  KAEPYEON,
     5:  ["준비운동:성장스트레칭", "줄넘기:음악줄넘기", "격파:뛰어앞차기 격파"],
     6:  ["명상", "제미타프로그램:앞차기"],
     7:  {sat:"부모님과\n행복한 주말 보내세요", weekend:true, text:"이번 주도 성실하게 수련한 우리 친구들, 푹 쉬고 월요일에 만나요!", img:"m_bow"},
-    9:  ["체력:장애물달리기", "품새:음악품새"],
-    10: ["체력:순발력달리기", "품새:음악품새"],
-    11: ["체력:리듬트레이닝", "품새:음악품새"],
+    9:  KAEPYEON,
+    10: KAEPYEON,
+    11: KAEPYEON,
     12: ["준비운동:바른체형운동", "줄넘기:음악줄넘기", "격파:뛰어앞차기 격파"],
     13: ["명상", "매트운동:높이뛰기"],
     14: {sat:"국기원\n보충수업", text:"국기원 심사를 앞두고 부족한 부분을 채우는 보충수업이에요.", img:"m_poomsae"},
-    16: ["체력:장애물달리기", "품새:음악품새"],
-    17: ["체력:순발력달리기", "품새:음악품새"],
-    18: ["체력:리듬트레이닝", "품새:음악품새"],
+    16: KAEPYEON,
+    17: KAEPYEON,
+    18: KAEPYEON,
     19: ["준비운동:성장스트레칭", "줄넘기:음악줄넘기", "격파:뛰어앞차기 격파"],
     20: {items:["명상", "제미타프로그램:앞차기"], event:"1박2일 합숙"},
     21: {sat:"1박2일 합숙", text:"자세한 일정과 준비물은 밴드 공지를 확인해 주세요.", img:"m_group_yellow"},
-    23: ["체력:장애물달리기", "품새:음악품새"],
-    24: ["체력:순발력달리기", "품새:음악품새"],
-    25: ["체력:리듬트레이닝", "품새:음악품새"],
+    23: KAEPYEON,
+    24: KAEPYEON,
+    25: KAEPYEON,
     26: ["심사:정기승급심사 총 연습"],
     27: ["심사:정기승급심사"],
     28: {sat:"국기원 심사", text:"시간과 장소는 별도로 공지해 드려요. 그동안 성실하게 연습한 만큼 자신 있게!", img:"m_trophy"},
@@ -541,13 +543,15 @@ const VIDEOS = {
   breaking:{label:"격파 연습 · 재미타·손날·메주먹·위력격파", short:"격파 연습", yt:"WiRMIQ4j9Ho"},
   jensen:{label:"젠슨 황 대표님 이야기", short:"젠슨 황 영상", parts:2},   /* v10: 홈페이지도 같이 올린 영상 파일로 → 누르면 바로 재생 */
   rhythm:{label:"리듬 트레이닝", short:"리듬 트레이닝", parts:1},   /* v10: 공유폴더 영상 · 초등부 준비운동 맨 앞 (v12에서 다시 사용) */
-  rhythm2:{label:"리듬 트레이닝", short:"리듬 트레이닝", parts:1}   /* v11: 새 리듬트레이닝 영상(유튜브 쇼츠 원본 파일) · v13부터 초등부 준비운동 맨 앞 */
+  rhythm2:{label:"리듬 트레이닝", short:"리듬 트레이닝", parts:1},   /* v11: 새 리듬트레이닝 영상(유튜브 쇼츠 원본 파일) · v13부터 초등부 준비운동 맨 앞 */
+  beat:{label:"비트 겨루기 · 대한리권협회", short:"비트 겨루기 영상", parts:1},   /* v14: 공유폴더 겨루기발차기영상 */
+  koryo:{label:"음악품새 고려", short:"고려 영상", parts:1}   /* v14: 관장님이 주신 음악품새 고려 영상 */
 };
 /* 우리 홈페이지(github.io)인지: 홈페이지는 유튜브·구글 드라이브로, 아티팩트는 같이 올린 영상 파일 → 없으면 유튜브를 화면 안에서 재생 */
 const EMBED = /github\.io$/.test(location.hostname) || /[?&]embed=1/.test(location.search);
 const DEFAULT_VIDEOS = {
   "태극 3장":["poom3"], "기본발차기 앞차기":["kick_front"], "기본발차기 돌려차기":["kick_round"], "재미타 발차기":["kick_front","kick_round","kick_side"],
-  "기본손동작":["hand_white","hand_ygb","hand_po","hand_red"],
+  "기본손동작":["hand_white","hand_ygb"],   /* v14 개편: 흰띠 ~ 초록띠 */
   "기본발차기":["kick_front","kick_round","kick_side","kick_back","kick_hook"],
   "앞차기":["kick_front"],
   "이달의 품새":["poom4","poom6","poom4_parts","poom6_parts"],
@@ -558,15 +562,16 @@ const DEFAULT_VIDEOS = {
   "태권체조":["tkd_aerobic"],
   "격파":["breaking"], "손날격파":["breaking"], "위력격파":["breaking"], "메주먹격파":["breaking"],
   "마무리 인사":["belt","dobok"],
-  "태극 1장":["poom1"], "음악품새":["poom4","poom6","poom4_parts","poom6_parts"],
+  "태극 1장":["poom1"], "음악품새":["poom4","poom4_parts","koryo"],   /* v14 개편: 4장 · 고려 · 금강 (음악은 버튼) */
   "성장스트레칭": GROUP==="yu" ? ["warm_basic"] : ["rhythm","warm_basic"], "바른체형운동": GROUP==="yu" ? ["stretchboard"] : ["rhythm","stretchboard"], "뛰어앞차기 격파":["kick_front","breaking"],
   "기본발차기 미트발차기":["kick_front","kick_round"],
   "정기승급심사 총 연습": GROUP==="yu" ? ["poom1","kick_front"] : ["poom4","poom6"],
   "정기승급심사": GROUP==="yu" ? ["poom1"] : ["poom4","poom6"],
-  "띠 수여식 · 심사평가":["belt"]
+  "띠 수여식 · 심사평가":["belt"],
+  "리듬트레이닝":["rhythm2"], "비트 겨루기":["beat"], "발차기 격파":["kick_round"]   /* v14 개편 */
 };
-const GROUPS = {"체력":"체력 훈련","격파":"격파","심사":"승급심사","PAPS":"PAPS 체력측정","커리큘럼":"커리큘럼교육","품새":"이달의 품새","줄넘기":"줄넘기","기술발차기":"기술발차기","매트운동":"매트운동","제미타프로그램":"재미타 프로그램","준비운동":"준비운동","유아체육":"유아체육","음악프로그램":"음악프로그램","발표력":"발표력","레크레이션":"레크레이션","기타":"오늘의 수련"};
-const GROUP_PHOTO = {"체력":"m_cheer","격파":"m_break","심사":"m_trophy","PAPS":"m_cheer","커리큘럼":"m_punch","품새":"m_poomsae","줄넘기":"m_pair_red","기술발차기":"m_kick_red","매트운동":"m_cheer","제미타프로그램":"m_break","준비운동":"m_cheer","유아체육":"m_group_yellow","음악프로그램":"m_girl_yellow","발표력":"m_bow","레크레이션":"m_group_yellow","기타":"m_pair_red"};
+const GROUPS = {"체력":"체력 훈련","격파":"격파","심사":"승급심사","PAPS":"PAPS 체력측정","커리큘럼":"커리큘럼교육","품새":"이달의 품새","줄넘기":"줄넘기","기술발차기":"기술발차기","매트운동":"매트운동","제미타프로그램":"재미타 프로그램","준비운동":"준비운동","유아체육":"유아체육","음악프로그램":"음악프로그램","발표력":"발표력","레크레이션":"레크레이션","기본동작":"기본동작","겨루기":"겨루기","기타":"오늘의 수련"};
+const GROUP_PHOTO = {"체력":"m_cheer","격파":"m_break","심사":"m_trophy","PAPS":"m_cheer","커리큘럼":"m_punch","품새":"m_poomsae","줄넘기":"m_pair_red","기술발차기":"m_kick_red","매트운동":"m_cheer","제미타프로그램":"m_break","준비운동":"m_cheer","유아체육":"m_group_yellow","음악프로그램":"m_girl_yellow","발표력":"m_bow","레크레이션":"m_group_yellow","기본동작":"m_punch","겨루기":"m_kick_pair","기타":"m_pair_red"};
 
 const ACT = {
   "시청각준비운동":{sub:"화면을 보며 따라 하는 준비운동", photo:"m_cheer", how:["화면 속 동작을 잘 봐요","박자에 맞춰 크게 따라 해요","다치지 않게 천천히 시작!"]},
@@ -588,7 +593,7 @@ const ACT = {
   "장애물달리기":{sub:"넘고, 돌고, 끝까지 달려요", photo:"m_cheer", how:["출발 신호에 맞춰 차례대로 출발해요","장애물을 건너뛰지 않고 하나씩 정확하게","힘들어도 끝까지 완주하면 성공! = 성실"]},
   "순발력달리기":{sub:"신호에 번개처럼 반응해요", photo:"m_kick_red", how:["사범님 신호를 잘 보고 들어요","신호가 나면 바로 출발!","방향을 바꿀 때는 몸을 낮춰요"]},
   "리듬트레이닝":{sub:"박자에 맞춰 발을 움직여요", photo:"m_girl_yellow", how:["음악 박자를 먼저 들어요","박자에 맞춰 스텝을 밟아요","틀려도 멈추지 말고 끝까지!"]},
-  "음악품새":{sub:"음악에 맞춰 품새 · 마지막엔 개인품새 점검", photo:"m_poomsae", how:[]},
+  "음악품새":{sub:"음악에 맞춰 품새 · 마지막엔 개인품새 점검", photo:"m_poomsae", cues:["p4","koryo","kumgang"], how:[]},
   "성장스트레칭":{sub:"쭉쭉 늘려요, 쑥쑥 자라요", photo:"m_cheer", how:["팔을 하늘로 쭉 뻗어요","다리를 쭉 펴고 10초 버티기","숨은 천천히 들이쉬고 내쉬어요"]},
   "바른체형운동":{sub:"구부정한 몸을 쭉! 바른 자세 만들기", photo:"m_poomsae", how:["허리와 어깨를 쭉 펴요","배꼽에 힘을 꽉!","거울을 보며 바른 자세 확인"]},
   "음악줄넘기":{sub:"신나는 음악에 맞춰 줄넘기!", photo:"m_pair_red", music:"club", how:["음악 박자에 맞춰 줄을 돌려요","모아뛰기 → 번갈아뛰기 → 엇걸어뛰기","걸려도 불평하지 않고 다시 시작! = 성실"]},
@@ -623,7 +628,7 @@ const ACT = {
   "좌전굴":{sub:"유연성 · 앉아윗몸앞으로굽히기", photo:"m_poomsae", how:["무릎을 펴고 발바닥을 측정대에 붙여요","두 손을 겹쳐 천천히 앞으로 밀어요","반동 없이 멈춘 곳에서 2초 버텨요","숨을 내쉬면서 더 멀리!"]},
   "기록측정평가 연습":{sub:"셔틀런 · 제자리멀리뛰기 · 악력 · 좌전굴", photo:"m_trophy", cue:"shuttle", how:["네 종목을 차례로 연습해요","내 지난 기록을 기억해 두세요","바른 자세가 좋은 기록을 만들어요"]},
   "기록측정평가":{sub:"이번 달 체력 기록을 측정해요", photo:"m_trophy", cue:"shuttle", how:["셔틀런 · 제자리멀리뛰기 · 악력 · 좌전굴","친구가 측정할 때 큰 소리로 응원해요","내 기록에 도전! 어제의 나를 이겨요"]},
-  "기본손동작":{sub:"띠별 커리큘럼 · 손기술", photo:"m_punch", how:["내 띠 영상을 보고 동작을 확인해요","사범님 구령에 맞춰 정확하게","절도 있게! 기합은 크게!"]},
+  "기본손동작":{sub:"흰띠 ~ 초록띠 · 띠별 손기술", photo:"m_punch", how:["내 띠 영상을 보고 동작을 확인해요","사범님 구령에 맞춰 정확하게","절도 있게! 기합은 크게!"]},
   "기본발동작":{sub:"띠별 커리큘럼 · 서기와 딛기", photo:"m_poomsae", how:["띠별 과제 동작을 하나씩 확인해요","무게중심을 낮추고 자세를 바르게","사범님 구령에 맞춰 정확하게"]},
   "기본발차기":{sub:"띠별 커리큘럼 · 발차기", photo:"m_kick_pair", how:["영상으로 발차기 모양을 먼저 봐요","무릎을 먼저 높이 들어요","차고 나서 빠르게 제자리로!"]},
   "긴줄넘기":{sub:"두 친구가 돌리는 긴 줄 안으로!", photo:"m_cheer", cue:"rope", how:["줄이 바닥을 칠 때 들어가요","친구와 박자를 맞춰 넘어요","걸려도 괜찮아, 다시 도전!"]},
@@ -633,7 +638,9 @@ const ACT = {
   "기술발차기":{sub:"정확한 자세로 힘차게!", photo:"m_kick_red", how:["준비 자세를 바르게","목표를 보고 정확하게 차요","차고 나서 균형을 지켜요"]},
   "물구나무서기 · 옆돌기":{sub:"매트 위에서 안전하게", photo:"m_cheer", how:["손목 · 어깨 준비운동을 꼭 해요","사범님 보조와 함께 도전해요","차례를 지키고 매트 밖에서는 기다려요"]},
   "앞차기":{sub:"태권도의 가장 기본 발차기", photo:"m_break", how:["무릎을 가슴까지 높이 들어요","발끝을 세우고 앞으로 쭉!","찬 발은 빠르게 접어서 내려요"]},
-  "이달의 품새":{sub:"", photo:"m_poomsae", how:[]}
+  "이달의 품새":{sub:"", photo:"m_poomsae", how:[]},
+  "비트 겨루기":{sub:"비트에 맞춰 스텝 · 발차기", photo:"m_kick_pair", cues:["beat"], how:["영상을 보며 스텝과 발차기를 익혀요","음악 비트에 맞춰 스텝을 밟아요","짝과 거리를 지키며 안전하게","박자를 놓쳐도 멈추지 않고 끝까지!"]},
+  "발차기 격파":{sub:"내 띠에 맞는 발차기로 격파!", photo:"m_break", how:["유급자 · 7세 : 돌려차기","1품 : 뛰어돌려차기","2품 · 3품 : 턴차기","격파 후 바른 자세로 착지, 인사!"]}
 };
 /* ===== 날짜별 추가 자료 (D 드라이브 자료에서 가져옴) ===== */
 const DAYPLUS = {};   /* 11월은 날짜별 추가 자료 없음 (필요하면 10월 파일의 15일 예시처럼 추가) */
@@ -653,7 +660,11 @@ const CUES = {
   start:{src:"assets/cue_start.mp3",label:"수련 시작 음성"},
   shuttle:{src:"assets/cue_shuttle.mp3",label:"셔틀런 음원"},
   rope:{src:"assets/cue_rope1m.mp3",label:"시한폭탄 줄넘기 1분"},
-  "60s":{src:"assets/cue_60s.mp3",label:"60초 · 10초 간격 신호음"}
+  "60s":{src:"assets/cue_60s.mp3",label:"60초 · 10초 간격 신호음"},
+  p4:{src:"assets/poom_4jang.mp3",label:"4장 음악"},          /* v14: 공유폴더 발표회 자료 */
+  koryo:{src:"assets/poom_koryo.mp3",label:"고려 음악"},
+  kumgang:{src:"assets/poom_kumgang.mp3",label:"금강 음악"},
+  beat:{src:"assets/beat_gyeorugi.mp3",label:"비트 겨루기 음악"}
 };
 
 /* ===== helpers ===== */
@@ -680,7 +691,7 @@ function strToItem(raw){
    숫자가 작을수록 정적 (0 명상·인성 → 1 스트레칭·발표 → 2 균형 → 3 품새·기본동작 → 4 발차기·격파 → 5 줄넘기·체조·매트 → 6 달리기·체력)
    같은 숫자끼리는 계획표 순서 그대로 */
 const MOVE_RANK_N = {"좌전굴":1,"중심잡기 운동":2,"균형감각 훈련":2,"악력":2,"에어매트 매달리기":3,"징검다리 훈련":5};
-const MOVE_RANK_G = {"명상":0,"인성교육":0,"준비운동":1,"발표력":1,"심사":3,"커리큘럼":3,"품새":3,"기술발차기":4,"제미타프로그램":4,"격파":4,
+const MOVE_RANK_G = {"명상":0,"인성교육":0,"준비운동":1,"발표력":1,"심사":3,"커리큘럼":3,"기본동작":3,"품새":3,"겨루기":4,"기술발차기":4,"제미타프로그램":4,"격파":4,
                      "음악프로그램":5,"줄넘기":5,"매트운동":5,"체력":6,"유아체육":6,"레크레이션":6,"PAPS":6};
 function moveRank(it){
   if(it.n in MOVE_RANK_N) return MOVE_RANK_N[it.n];
@@ -713,6 +724,7 @@ function ytIdOf(u){ const m=String(u||"").match(/(?:youtu\.be\/|v=|shorts\/|embe
 function vbtn(key,label){
   return `<button class="vbtn" data-video="${esc(key)}">${esc(label)}</button>`;
 }
+function cueButtons(keys){ return keys.filter(k=>CUES[k]).map(k=>`<button class="btn" data-cue="${k}">▶ ${esc(CUES[k].label)}</button>`).join(""); }
 function vidButtons(list, extra){
   return list.map(v=>vbtn(v,VIDEOS[v].short)).join("") + (extra||[]).map(x=>vbtn("yt:"+x.id+":"+(x.t||"영상"),x.t||"영상")).join("");
 }
@@ -842,7 +854,7 @@ function buildDeck(d){
         <div class="kicker"><span class="chip">이달의 품새</span><span class="chip olive">${M}월 목표</span></div>
         <h2>${E(`item:${idx}:n`,it.n)}</h2>${itemField(it,"sub")?E(`item:${idx}:sub`,itemField(it,"sub"),"div","sub"):""}
         <div class="poom${itemField(it,"sub")?" withsub":""}"><div><em>유급자</em>${E(`item:${idx}:lo`,itemField(it,"lo"))}</div><div><em>유품자</em>${E(`item:${idx}:hi`,itemField(it,"hi"))}</div></div>
-        <div class="acts2">${vidButtons(vids,it.ytx)}</div>
+        <div class="acts2">${cueButtons(a.cues||[])}${vidButtons(vids,it.ytx)}</div>
         <img class="photo" src="assets/${photo}.webp" alt="품새 준비 자세의 모델 수련생">`});
       return;
     }
@@ -856,14 +868,14 @@ function buildDeck(d){
         <img class="photo" src="assets/m_kick_red.webp" alt="발차기 동작의 모델 수련생">`});
       return;
     }
-    const cue=a.cue?CUES[a.cue]:null;
+    const cueKeys=a.cues||(a.cue?[a.cue]:[]);
     const how=[0,1,2,3].map(j=>{const t=itemField(it,"how",j);return `<li class="${t?"":"empty"}"><b>${j+1}</b>${E(`item:${idx}:how:${j}`,t)}</li>`}).join("");
     S.push({sid:"i"+idx, label:it.n, music:a.music||"bgm", cls:"s-act", html:`${deco}<div class="halo"></div>${brand}
       ${a.timer?`<div class="sw"><span class="swt" data-swt>00:00</span><div class="swb"><button class="btn" data-sw="go">▶ 시작</button><button class="btn dark" data-sw="reset">처음부터</button></div></div>`:""}
       <div class="kicker"><span class="chip">${esc(GROUPS[it.g]||it.g)}</span>${a.music==="club"?`<span class="chip red">♪ 클럽 음악</span>`:""}</div>
       <h2 class="${it.n.length>6?"long":""}">${E(`item:${idx}:n`,it.n)}</h2>${E(`item:${idx}:sub`,itemField(it,"sub"),"div","sub")}
       <ul class="how">${how}</ul>
-      <div class="acts2">${cue?`<button class="btn" data-cue="${a.cue}">▶ ${esc(cue.label)}</button>`:""}${vidButtons(vids,it.ytx)}</div>
+      <div class="acts2">${cueButtons(cueKeys)}${vidButtons(vids,it.ytx)}</div>
       <img class="photo" src="assets/${photo}.webp" alt="${esc(it.n)} 동작의 모델 수련생">`});
   });
   const nd=dayList.find(x=>x>d && !isSpecial(x));
