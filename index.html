@@ -547,7 +547,9 @@ const VIDEOS = {
   rhythm:{label:"리듬 트레이닝", short:"리듬 트레이닝", parts:1},   /* v10: 공유폴더 영상 · 초등부 준비운동 맨 앞 (v12에서 다시 사용) */
   rhythm2:{label:"리듬 트레이닝", short:"리듬 트레이닝", parts:1},   /* v11: 새 리듬트레이닝 영상(유튜브 쇼츠 원본 파일) · v13부터 초등부 준비운동 맨 앞 */
   beat:{label:"비트 겨루기 · 대한리권협회", short:"비트 겨루기 영상", parts:1},   /* v14: 공유폴더 겨루기발차기영상 */
-  koryo:{label:"음악품새 고려", short:"고려 영상", parts:1}   /* v14: 관장님이 주신 음악품새 고려 영상 */
+  koryo:{label:"음악품새 고려", short:"고려 영상", parts:1},   /* v14: 관장님이 주신 음악품새 고려 영상 (v16부터 안 씀) */
+  koryo_m:{label:"음악품새 고려 (좌우반전)", short:"고려 영상", parts:1},   /* v16: 거울처럼 따라 하게 좌우반전 */
+  kumgang_m:{label:"음악품새 금강 (좌우반전)", short:"금강 영상", parts:1}   /* v16: 관장님이 주신 음악품새 금강 영상 · 좌우반전 */
 };
 /* 우리 홈페이지(github.io)인지: 홈페이지는 유튜브·구글 드라이브로, 아티팩트는 같이 올린 영상 파일 → 없으면 유튜브를 화면 안에서 재생 */
 const EMBED = /github\.io$/.test(location.hostname) || /[?&]embed=1/.test(location.search);
@@ -564,7 +566,7 @@ const DEFAULT_VIDEOS = {
   "태권체조":["tkd_aerobic"],
   "격파":["breaking"], "손날격파":["breaking"], "위력격파":["breaking"], "메주먹격파":["breaking"],
   "마무리 인사":["belt","dobok"],
-  "태극 1장":["poom1"], "음악품새":["poom4","poom4_parts","koryo"],   /* v14 개편: 4장 · 고려 · 금강 (음악은 버튼) */
+  "태극 1장":["poom1"], "음악품새":["poom4","poom4_parts","koryo_m","kumgang_m"],   /* v16: 고려·금강 좌우반전 영상 */   /* v14 개편: 4장 · 고려 · 금강 (음악은 버튼) */
   "성장스트레칭": GROUP==="yu" ? ["warm_basic"] : ["rhythm","warm_basic"], "바른체형운동": GROUP==="yu" ? ["stretchboard"] : ["rhythm","stretchboard"], "뛰어앞차기 격파":["kick_front","breaking"],
   "기본발차기 미트발차기":["kick_front","kick_round"],
   "정기승급심사 총 연습": GROUP==="yu" ? ["poom1","kick_front"] : ["poom4","poom6"],
