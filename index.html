@@ -215,6 +215,7 @@ body{margin:0;background:#3a332c;color:var(--ink);font-family:var(--f-body);over
 .s-notice .plink{position:absolute;right:110px;top:950px;width:509px;box-sizing:border-box;text-align:center;font:700 30px/1 var(--f-body);background:var(--ink);color:#fff;border-radius:999px;padding:20px 0;text-decoration:none}
 .s-notice .plink:focus-visible{outline:4px solid var(--gold);outline-offset:4px}
 .s-notice .poster:has(+.plink){height:720px}
+.s-notice button.plink{border:0;cursor:pointer}
 .s-notice .poster img{width:100%;height:100%;object-fit:cover;display:block}
 .s-notice .poster span{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);font:700 24px/1 var(--f-body);background:rgba(42,36,31,.82);color:#fff;border-radius:999px;padding:12px 20px;white-space:nowrap}
 .s-notice:has(.poster) .pin{right:810px}
@@ -549,7 +550,8 @@ const VIDEOS = {
   beat:{label:"비트 겨루기 · 대한리권협회", short:"비트 겨루기 영상", parts:1},   /* v14: 공유폴더 겨루기발차기영상 */
   koryo:{label:"음악품새 고려", short:"고려 영상", parts:1},   /* v14: 관장님이 주신 음악품새 고려 영상 (v16부터 안 씀) */
   koryo_m:{label:"음악품새 고려 (좌우반전)", short:"고려 영상", parts:1},   /* v16: 거울처럼 따라 하게 좌우반전 */
-  kumgang_m:{label:"음악품새 금강 (좌우반전)", short:"금강 영상", parts:1}   /* v16: 관장님이 주신 음악품새 금강 영상 · 좌우반전 */
+  kumgang_m:{label:"음악품새 금강 (좌우반전)", short:"금강 영상", parts:1},   /* v16: 관장님이 주신 음악품새 금강 영상 · 좌우반전 */
+  camp_hl:{label:"1박2일 하이라이트", short:"1박2일 하이라이트", parts:2}   /* v17: 11월 9일 전달사항 */
 };
 /* 우리 홈페이지(github.io)인지: 홈페이지는 유튜브·구글 드라이브로, 아티팩트는 같이 올린 영상 파일 → 없으면 유튜브를 화면 안에서 재생 */
 const EMBED = /github\.io$/.test(location.hostname) || /[?&]embed=1/.test(location.search);
@@ -736,14 +738,16 @@ function vidButtons(list, extra){
 }
 
 /* 날짜별 전달사항 포스터 (초등부·유치부 공통) */
-const NOTICE_POSTER = {};
+const NOTICE_POSTER = {
+  9:{img:"assets/notice_jjimjil.webp", t:"품찜질방합숙", video:"camp_hl", videoT:"▶ 1박2일 하이라이트 영상"}   /* v17 */
+};
 function noticeSlide(d){
   const dow=dateOf(d).getDay(), txt=(STORE[d]&&STORE[d].notice)||((DAYPLUS[d]&&DAYPLUS[d].notice)||"");
   return {sid:"notice", label:"전달사항", music:"bgm", cls:"s-notice", html:`${brand}
     <div class="nh"><h2>오늘의 전달사항</h2><span>${M}월 ${d}일 ${DOW_LONG[dow]}</span></div>
     <div class="pin"></div>
-    ${NOTICE_POSTER[d]?`<button class="poster" data-img="${NOTICE_POSTER[d].img}" data-imgt="${esc(NOTICE_POSTER[d].t)}" aria-label="포스터 크게 보기"><img src="${NOTICE_POSTER[d].img}" alt="${esc(NOTICE_POSTER[d].t)} 포스터"><span>눌러서 크게 보기</span></button>${NOTICE_POSTER[d].link?`<a class="plink" href="${NOTICE_POSTER[d].link}" target="_blank" rel="noopener">${esc(NOTICE_POSTER[d].linkT||"자세히 보기")}</a>`:""}`:""}
-    <div class="board${NOTICE_POSTER[d]?" withposter":""}"><div class="ntext" data-k="notice" data-ph="${canWrite?"✏ 수정을 누르고 여기에 전달사항을 적어 주세요":"오늘은 전달사항이 없어요"}">${esc(txt)}</div></div>`};
+    ${NOTICE_POSTER[d]?`<button class="poster" data-img="${NOTICE_POSTER[d].img}" data-imgt="${esc(NOTICE_POSTER[d].t)}" aria-label="포스터 크게 보기"><img src="${NOTICE_POSTER[d].img}" alt="${esc(NOTICE_POSTER[d].t)} 포스터"><span>눌러서 크게 보기</span></button>${NOTICE_POSTER[d].link?`<a class="plink" href="${NOTICE_POSTER[d].link}" target="_blank" rel="noopener">${esc(NOTICE_POSTER[d].linkT||"자세히 보기")}</a>`:""}${NOTICE_POSTER[d].video?`<button class="plink" data-video="${NOTICE_POSTER[d].video}">${esc(NOTICE_POSTER[d].videoT)}</button>`:""}`:""}
+    <div class="board${NOTICE_POSTER[d]?" withposter":""}"><div class="ntext" data-k="notice" data-ph="${canWrite?"✏ 수정을 누르고 여기에 전달사항을 적어 주세요":NOTICE_POSTER[d]?"":"오늘은 전달사항이 없어요"}">${esc(txt)}</div></div>`};
 }
 
 
