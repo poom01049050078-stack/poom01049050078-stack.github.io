@@ -714,7 +714,7 @@ function moveRank(it){
 function defaultItems(d){ const e=PLAN.days[d]; const arr=Array.isArray(e)?e:(e&&e.items)||[];
   const out=arr.map(strToItem).map((it,i)=>[it,i]).sort((a,b)=>moveRank(a[0])-moveRank(b[0])||a[1]-b[1]).map(x=>x[0]);
   /* v19: 유치부는 태권체조가 없는 날 마지막 프로그램 바로 앞에 태권체조(SMILEY) */
-  if(GROUP==="yu" && !out.some(it=>it.n==="태권체조"||it.g==="심사")){
+  if(GROUP==="yu" && !out.some(it=>it.n==="태권체조")){   /* v20: 심사 날도 포함 */
     const prog=out.filter(it=>it.g!=="명상"&&it.g!=="인성교육");
     if(prog.length) out.splice(out.indexOf(prog[prog.length-1]),0,strToItem("음악프로그램:태권체조"));
   }
