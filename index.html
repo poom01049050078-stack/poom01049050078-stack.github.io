@@ -566,7 +566,7 @@ const DEFAULT_VIDEOS = {
   "시청각준비운동":["av_run","av_thief","av_dino","av_monkey","warm_shark","warm_gym","warm_basic"],
   "바른체형교정":["stretchboard"],
   "폼롤러스트레칭":["foamroller"],
-  "태권체조":["tkd_aerobic"],
+  "태권체조": GROUP==="yu" ? [] : ["tkd_aerobic"],   /* v19: 유치부는 SMILEY 음악으로 */
   "격파":["breaking"], "손날격파":["breaking"], "위력격파":["breaking"], "메주먹격파":["breaking"],
   "마무리 인사":["belt","dobok"],
   "태극 1장":["poom1"], "음악품새":["poom4","poom4_parts","koryo_m","kumgang_m"],   /* v16: 고려·금강 좌우반전 영상 */   /* v14 개편: 4장 · 고려 · 금강 (음악은 버튼) */
@@ -617,7 +617,9 @@ const ACT = {
   "에어매트 매달리기":{sub:"매달려서 힘 기르기", photo:"m_cheer", how:["두 손으로 꽉 잡아요","팔에 힘 주고 버티기","내려올 때는 사뿐히"]},
   "원 줄넘기":{sub:"줄을 돌려 한 번씩 넘어요", photo:"m_girl_yellow", how:["줄을 뒤에서 앞으로 돌려요","줄이 발 앞에 오면 점프!","천천히 한 개씩 성공!"]},
   "시계 돌리기":{sub:"빙글빙글 도는 줄을 넘어요", photo:"m_group_yellow", how:["사범님이 줄을 돌려요","줄이 오면 점프!","걸려도 괜찮아, 다시 도전!"]},
-  "태권체조":{sub:"천하무적 태권도", photo:"m_girl_yellow", how:["음악을 잘 들어요","박자에 맞춰 힘차게!","기합은 크게!"]},
+  "태권체조": GROUP==="yu"
+    ? {sub:"SMILEY 음악에 맞춰 신나게!", photo:"m_girl_yellow", cues:["smiley"], how:["음악을 잘 들어요","박자에 맞춰 힘차게!","기합은 크게!"]}   /* v19 */
+    : {sub:"천하무적 태권도", photo:"m_girl_yellow", how:["음악을 잘 들어요","박자에 맞춰 힘차게!","기합은 크게!"]},
   "재미타 발차기":{sub:"재미있게 배우는 발차기", photo:"m_kick_red", how:["무릎을 먼저 높이 들어요","목표를 보고 차요","차고 나서 균형 잡기!"]},
   "격파":{sub:"재미타 격파 도전!", photo:"m_break", how:["목표를 잘 봐요","정확한 자세로 힘차게","격파 후 인사!"]},
   "태극 3장":{sub:"커리큘럼 · 품새", photo:"m_poomsae", how:["영상으로 순서를 먼저 봐요","한 동작씩 정확하게","끝나면 바른 자세로 마무리"]},
@@ -674,7 +676,8 @@ const CUES = {
   p4:{src:"assets/poom_4jang.mp3",label:"4장 음악"},          /* v14: 공유폴더 발표회 자료 */
   koryo:{src:"assets/poom_koryo.mp3",label:"고려 음악"},
   kumgang:{src:"assets/poom_kumgang.mp3",label:"금강 음악"},
-  beat:{src:"assets/beat_gyeorugi.mp3",label:"비트 겨루기 음악"}
+  beat:{src:"assets/beat_gyeorugi.mp3",label:"비트 겨루기 음악"},
+  smiley:{src:"assets/taekche_smiley.mp3",label:"태권체조 SMILEY 음악"}   /* v19: 유치부 태권체조 */
 };
 
 /* ===== helpers ===== */
@@ -709,7 +712,13 @@ function moveRank(it){
   return it.g in MOVE_RANK_G ? MOVE_RANK_G[it.g] : 4;
 }
 function defaultItems(d){ const e=PLAN.days[d]; const arr=Array.isArray(e)?e:(e&&e.items)||[];
-  return arr.map(strToItem).map((it,i)=>[it,i]).sort((a,b)=>moveRank(a[0])-moveRank(b[0])||a[1]-b[1]).map(x=>x[0]); }
+  const out=arr.map(strToItem).map((it,i)=>[it,i]).sort((a,b)=>moveRank(a[0])-moveRank(b[0])||a[1]-b[1]).map(x=>x[0]);
+  /* v19: 유치부는 태권체조가 없는 날 마지막 프로그램 바로 앞에 태권체조(SMILEY) */
+  if(GROUP==="yu" && !out.some(it=>it.n==="태권체조"||it.g==="심사")){
+    const prog=out.filter(it=>it.g!=="명상"&&it.g!=="인성교육");
+    if(prog.length) out.splice(out.indexOf(prog[prog.length-1]),0,strToItem("음악프로그램:태권체조"));
+  }
+  return out; }
 
 /* ===== 저장소: 수정한 내용 (days/d14 문서 하나에 하루치) ===== */
 const LS_KEY = "poom-days-"+PLAN.year+"-"+PLAN.month+(GROUP==="yu"?"-yu":"");
